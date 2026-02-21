@@ -21,10 +21,12 @@ jobs:
 
       - name: "Setup doxygen"
         uses: ssciwr/doxygen-install@v1
-
-      - name: "Setup graphviz"
         run: |
           doxygen --version
+
+      - name: "Setup graphviz"
+        uses: ts-graphviz/setup-graphviz@v2
+        run: |
           dot -V
 
       - name: "Setup gil"
