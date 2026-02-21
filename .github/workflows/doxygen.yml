@@ -21,18 +21,19 @@ jobs:
 
       - name: "Setup doxygen"
         uses: ssciwr/doxygen-install@v1
-        run: |
-          doxygen --version
 
       - name: "Setup graphviz"
         uses: ts-graphviz/setup-graphviz@v2
-        run: |
-          dot -V
 
       - name: "Setup gil"
         run: |
           pip3 install gil
           gil update
+
+      - name: "Doxygen version"
+        run: |
+          doxygen --version
+          dot -V
 
       - name: "Doxygen"
         env:
