@@ -20,9 +20,12 @@ jobs:
         run: cmake --version
 
       - name: "Setup doxygen"
+        uses: ssciwr/doxygen-install@v1
+
+      - name: "Setup graphviz"
         run: |
           sudo apt-get update
-          sudo apt-get -y install doxygen doxygen-latex graphviz binutils-dev
+          sudo apt-get -y install graphviz binutils-dev
           doxygen --version
           dot -V
 
