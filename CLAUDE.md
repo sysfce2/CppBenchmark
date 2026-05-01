@@ -2,13 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Repository Setup
+
+`build/`, `cmake/`, and the contents of `modules/<name>/` are **not in git**. They are pulled in by the [gil](https://github.com/chronoxor/gil) tool from the entries in `.gitlinks`. Without this step every documented build command fails because the scripts and third-party sources are missing.
+
+```bash
+pip3 install gil
+gil update   # fetches build/, cmake/, modules/Catch2, modules/HdrHistogram, modules/cpp-optparse, modules/zlib
+```
+
 ## Build Commands
 
-The project uses CMake (minimum 3.20) with C++23. All build scripts live under `build/`.
+The project uses CMake (minimum 3.20) with C++23. All build scripts live under `build/` (after `gil update`).
 
 **Full build (generate + build + test + install):**
 ```bash
-cd build && ./unix.sh
+cd build && ./unix.sh        # Linux / macOS
+cd build && unix.bat         # Windows (Cygwin / MSYS2)
+cd build && mingw.bat        # Windows (MinGW)
+cd build && vs.bat           # Windows (Visual Studio)
 ```
 
 **Step by step (from `build/Unix/`):**
@@ -18,6 +30,10 @@ cd build && ./unix.sh
 ./03-tests.sh      # ctest -V
 ./04-install.sh    # make -j4 install  (outputs to bin/)
 ```
+
+**Doxygen API docs:** the top-level `CMakeLists.txt` defines a `doxygen` target driven by `documents/Doxyfile`. Run `make doxygen` from the configured build directory.
+
+**Code coverage (Unix only, added in `eb5631ed`):** the `CodeCoverage` CMake module is included from `cmake/`. Coverage targets are gated on the toolchain — see `cmake/CodeCoverage.cmake` for the available targets and required flags.
 
 **Run tests directly:**
 ```bash
@@ -41,6 +57,8 @@ cd build && ./unix.sh
 ### Library (`cppbenchmark`)
 
 The library is compiled from `include/benchmark/` (headers) and `source/benchmark/` (implementations) into `libcppbenchmark.a`. The single public include is `benchmark/cppbenchmark.h`.
+
+When CppBenchmark is consumed as a subdirectory by a parent CMake project, set `-DCPPBENCHMARK_MODULE=ON`. The top-level `CMakeLists.txt` gates examples, tests, and the install step on `if(NOT CPPBENCHMARK_MODULE)`, so this flag yields the library target only.
 
 **Benchmark class hierarchy:**
 - `BenchmarkBase` — base for all benchmark types; holds `Settings`, manages phases and launch counting
