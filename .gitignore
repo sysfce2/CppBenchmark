@@ -16,6 +16,7 @@ modules/*
 !modules/*.cmake
 
 # Temporary
+.env
 .idea
 .vscode
 temp
